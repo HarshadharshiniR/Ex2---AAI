@@ -1,7 +1,7 @@
-<H3>Enter Name</H3>
-<H3>Enter Register No.</H3>
+<H3>Enter Name</H3>HARSHADHARSHINI.R
+<H3>Enter Register No.</H3>212224230089
 <H3>Experiment 2</H3>
-<H3>Date</H3>
+<H3>Date</H3>22-04-2025
 <h1 align =center>Implementation of Exact Inference Method of Bayesian Network</h1>
 
 ## Aim:
@@ -18,11 +18,54 @@ Step 6: Perform exact inference using the defined evidence and query variables.<
 Step 7: Print the results.<br>
 
 ## Program :
-<Type your Code here>
+
+# Import required libraries
+from pgmpy.models import BayesianNetwork
+from pgmpy.factors.discrete import TabularCPD
+from pgmpy.inference import VariableElimination
+
+# Define bayesian network structure
+network=BayesianNetwork([
+    ('Burglary','Alarm'),
+    ('Earthquake','Alarm'),
+    ('Alarm','JohnCalls'),
+    ('Alarm','MaryCalls')
+])
+
+# Define the conditional probability distributions
+cpd_burglary = TabularCPD(variable='Burglary',variable_card=2,values=[[0.999],[0.001]])
+cpd_earthquake = TabularCPD(variable='Earthquake',variable_card=2,values=[[0.998],[0.002]])
+cpd_alarm = TabularCPD(variable ='Alarm',variable_card=2, values=[[0.999, 0.71, 0.06, 0.05],[0.001, 0.29, 0.94, 0.95]],evidence=['Burglary','Earthquake'],evidence_card=[2,2])
+cpd_john_calls = TabularCPD(variable='JohnCalls',variable_card=2,values=[[0.95,0.1],[0.05,0.9]],evidence=['Alarm'],evidence_card=[2])
+cpd_mary_calls = TabularCPD(variable='MaryCalls',variable_card=2,values=[[0.99,0.3],[0.01,0.7]],evidence=['Alarm'],evidence_card=[2])
+
+# Add CPDs to the network
+network.add_cpds(cpd_burglary,cpd_earthquake,cpd_alarm,cpd_john_calls,cpd_mary_calls)
+
+# Initialize the inference engine
+inference = VariableElimination(network)
+
+# Perform exact inference-------1
+evidence ={'JohnCalls':1,'MaryCalls':0} #john called(1) and mary didn't call (0) as evidence
+query_variable ='Burglary'
+result = inference.query(variables=[query_variable],evidence=evidence)
+
+# Print result-----1
+print(result)
+
+# Perform exact inference--------2
+evidence1 ={'JohnCalls':1,'MaryCalls':1} #john called(1) and mary called (1) as evidence
+query_variable ='Burglary'
+result2 = inference.query(variables=[query_variable],evidence=evidence)
+
+# Print result-----2
+print(result2)
 
 
 ## Output :
-<Show the results>
+![365455917-ec38dbf8-be24-48f8-a6b8-679c17a9fa5b](https://github.com/user-attachments/assets/cf4cf1ab-eb0a-4a0b-9e61-cbabf5751bbb)
+
+![365456369-67c3b379-e4d5-41fb-94c5-2db18dda815a](https://github.com/user-attachments/assets/e02462e4-f2bf-4070-bd52-8ebda1ed7d02)
 
 ## Result :
 Thus, Bayesian Inference was successfully determined using Variable Elimination Method
